@@ -41,8 +41,8 @@ export default function Flatlist() {
             </View>
           )}
           <View>
-            <Text variant="titleLarge">{title}</Text>
-            {descriptionText && <Text variant="bodySmall">{descriptionText}</Text>}
+            <Text style={styles.titleText} variant="titleLarge">{title}</Text>
+            {descriptionText && <Text style={styles.titleText} variant="bodySmall">{descriptionText}</Text>}
           </View>
         </View>
       );
@@ -61,17 +61,23 @@ export default function Flatlist() {
   
   const styles = StyleSheet.create({
     itemContainer: {
+      backgroundColor: '#3d3846',
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: 'gray',
-      paddingBottom: 5,
+      marginBottom: 15,
+      paddingBottom: 0,
+      paddingLeft: 5,
+      paddingRight:5,
+      marginTop:5,
+      borderRadius:10,
     },
     icon: {
       width: 50,
       height: 50,
       marginRight: 10,
+    },
+    titleText: {
+      color: 'white',
     },
   });
   
