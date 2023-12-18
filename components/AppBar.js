@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Text } from 'react-native-paper';
 
 const AppBar = () => (
   <Appbar.Header>
-    <Appbar.Content title="New Flatpaks" />
+    <Text variant="displayMedium">New Flatpaks</Text>
   </Appbar.Header>
 );
 
