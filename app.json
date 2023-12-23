@@ -1,37 +1,38 @@
 {
-  "expo": {
-    "name": "newflatpaks",
-    "slug": "new-flatpaks",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+  "expo": {    
+  "name": "newflatpaks",
+  "slug": "newflatpaks",
+  "version": "1.0.0",
+  "orientation": "portrait",
+  "icon": "./assets/android/play_store_512.png",
+  "userInterfaceStyle": "automatic",
+  "splash": {
+    "image": "./assets/android/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
+  "assetBundlePatterns": [
+    "**/*"
+  ],
+  "ios": {
+    "supportsTablet": true
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/android/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "monochromeImage": "./assets/android/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
+      "backgroundImage": "./assets/android/res/mipmap-xxxhdpi/ic_launcher_background.png",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.zatsando.newflatpaks"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "package": "com.zachvlat.newflatpaks"
+  },
+  "web": {
+    "favicon": "./assets/web/favicon.ico"
+  },
     "extra": {
       "eas": {
-        "projectId": "e7b971d8-4767-4e95-acf2-599037f8a935"
+        "projectId": "4a66507e-4411-4621-98e5-72d839ed5f90"
       }
-    },
-    "owner": "zatsando"
+    }
   }
 }
