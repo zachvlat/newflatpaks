@@ -1,11 +1,11 @@
 {
   "expo": {    
-  "name": "newflatpaks",
+  "name": "New Flatpaks",
   "slug": "newflatpaks",
   "version": "1.0.0",
   "orientation": "portrait",
   "icon": "./assets/android/play_store_512.png",
-  "userInterfaceStyle": "automatic",
+  "userInterfaceStyle": "dark",
   "splash": {
     "image": "./assets/android/res/mipmap-xxxhdpi/ic_launcher_monochrome.png",
     "resizeMode": "contain",
