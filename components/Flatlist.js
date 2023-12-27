@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Image, StyleSheet, ScrollView } from 'react-native';
-import xml2js from 'react-native-xml2js';
+import { View, FlatList, Image, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { Text } from 'react-native-paper';
+import xml2js from 'react-native-xml2js';
 
 export default function Flatlist() {
   const [items, setItems] = useState([]);
@@ -24,6 +24,17 @@ export default function Flatlist() {
       });
   }, []);
 
+  const openAppUrl = (appUrl) => {
+    try {
+      if (appUrl) {
+        console.log('Opening app URL:', appUrl);
+        Linking.openURL(appUrl);
+      }
+    } catch (error) {
+      console.error('Error opening app URL:', error);
+    }
+  };
+
   const renderItem = ({ item }) => {
     const title = item.title[0];
     const imgSrcRegex = /<img src="(.*?)"/;
@@ -32,21 +43,30 @@ export default function Flatlist() {
     const descriptionRegex = /<p>(.*?)<\/p>/;
     const descriptionMatch = item.description[0].match(descriptionRegex);
     const descriptionText = descriptionMatch ? descriptionMatch[1] : null;
-
+    const appUrl = item.link[0];
+  
     return (
-      <View style={styles.itemContainer}>
+      <TouchableOpacity onPress={() => openAppUrl(appUrl)} style={styles.itemContainer}>
         {imgSrc && (
           <View>
             <Image source={{ uri: imgSrc }} style={styles.icon} />
           </View>
         )}
-        <View>
+        <View style={styles.textContainer}>
           <Text style={styles.titleText} variant="titleLarge">{title}</Text>
-          {descriptionText && <Text style={styles.titleText} variant="bodySmall">{descriptionText}</Text>}
+          {descriptionText && (
+            <Text style={styles.descriptionText} variant="bodySmall" numberOfLines={2}>{descriptionText}</Text>
+          )}
+          {appUrl && (
+            <View onPress={() => console.log('Testing URL:', appUrl)}>
+            </View>
+          )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
+  
+  
 
   return (
     <ScrollView>
@@ -67,9 +87,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    paddingBottom: 0,
-    paddingLeft: 5,
-    paddingRight: 5,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingRight: 10,
     marginTop: 5,
     borderRadius: 10,
   },
@@ -80,5 +101,12 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: 'white',
+  },
+  textContainer: {
+    flex: 1,
+  },
+  descriptionText: {
+    color: 'white',
+    flexShrink: 1,
   },
 });
