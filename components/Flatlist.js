@@ -1,80 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, Image, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { Text } from 'react-native-paper';
-import xml2js from 'react-native-xml2js';
+import { XMLParser } from 'fast-xml-parser';
 
 export default function Flatlist() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch('https://flathub.org/api/v2/feed/new')
-      .then((response) => response.text())
-      .then((xmlData) => {
-        xml2js.parseString(xmlData, (error, result) => {
-          if (error) {
-            console.error('Error parsing XML:', error);
-          } else {
-            const rssItems = result?.rss?.channel[0]?.item || [];
-            setItems(rssItems);
-          }
+    const fetchFeed = async () => {
+      try {
+        const response = await fetch('https://flathub.org/api/v2/feed/new');
+        const xmlData = await response.text();
+
+        // Parse XML safely
+        const parser = new XMLParser({
+          ignoreAttributes: false,
+          attributeNamePrefix: '',
+          textNodeName: 'text',
         });
-      })
-      .catch((error) => {
-        console.error('Error fetching XML:', error);
-      });
+
+        const result = parser.parse(xmlData);
+        const rssItems = result?.rss?.channel?.item || [];
+        setItems(Array.isArray(rssItems) ? rssItems : [rssItems]);
+      } catch (error) {
+        console.error('Error fetching or parsing XML:', error);
+      }
+    };
+
+    fetchFeed();
   }, []);
 
   const openAppUrl = (appUrl) => {
-    try {
-      if (appUrl) {
-        console.log('Opening app URL:', appUrl);
-        Linking.openURL(appUrl);
-      }
-    } catch (error) {
-      console.error('Error opening app URL:', error);
+    if (appUrl) {
+      console.log('Opening app URL:', appUrl);
+      Linking.openURL(appUrl).catch((err) => console.error('Error opening URL:', err));
     }
   };
 
   const renderItem = ({ item }) => {
-    const title = item.title[0];
-    const imgSrcRegex = /<img src="(.*?)"/;
-    const imgSrcMatch = item.description[0].match(imgSrcRegex);
+    const title = item.title;
+    const description = item.description || '';
+
+    // Extract image and description text
+    const imgSrcMatch = description.match(/<img src="(.*?)"/);
     const imgSrc = imgSrcMatch ? imgSrcMatch[1] : null;
-    const descriptionRegex = /<p>(.*?)<\/p>/;
-    const descriptionMatch = item.description[0].match(descriptionRegex);
-    const descriptionText = descriptionMatch ? descriptionMatch[1] : null;
-    const appUrl = item.link[0];
-  
+
+    const descriptionMatch = description.match(/<p>(.*?)<\/p>/);
+    const descriptionText = descriptionMatch ? descriptionMatch[1] : '';
+
+    const appUrl = item.link;
+
     return (
       <TouchableOpacity onPress={() => openAppUrl(appUrl)} style={styles.itemContainer}>
-        {imgSrc && (
-          <View>
-            <Image source={{ uri: imgSrc }} style={styles.icon} />
-          </View>
-        )}
+        {imgSrc && <Image source={{ uri: imgSrc }} style={styles.icon} />}
         <View style={styles.textContainer}>
           <Text style={styles.titleText} variant="titleLarge">{title}</Text>
-          {descriptionText && (
-            <Text style={styles.descriptionText} variant="bodySmall" numberOfLines={2}>{descriptionText}</Text>
-          )}
-          {appUrl && (
-            <View onPress={() => console.log('Testing URL:', appUrl)}>
-            </View>
-          )}
+          {descriptionText ? (
+            <Text style={styles.descriptionText} variant="bodySmall" numberOfLines={2}>
+              {descriptionText}
+            </Text>
+          ) : null}
         </View>
       </TouchableOpacity>
     );
   };
-  
-  
 
   return (
     <ScrollView>
       <View>
         <FlatList
           data={items}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(_, index) => index.toString()}
           renderItem={renderItem}
+          numColumns={2} // 👈 two columns
+          columnWrapperStyle={styles.row} // 👈 style for spacing between columns
+          contentContainerStyle={styles.listContent}
         />
       </View>
     </ScrollView>
@@ -82,31 +82,39 @@ export default function Flatlist() {
 }
 
 const styles = StyleSheet.create({
+  listContent: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  row: {
+    justifyContent: 'space-between',
+  },
   itemContainer: {
     backgroundColor: '#3d3846',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    paddingTop: 10,
-    paddingRight: 10,
-    marginTop: 5,
+    flex: 1,
+    margin: 5,
     borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
   },
   icon: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
+    width: 70,
+    height: 70,
+    marginBottom: 10,
+    borderRadius: 10,
   },
   titleText: {
     color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
   textContainer: {
     flex: 1,
   },
   descriptionText: {
     color: 'white',
-    flexShrink: 1,
+    textAlign: 'center',
+    fontSize: 12,
   },
 });
